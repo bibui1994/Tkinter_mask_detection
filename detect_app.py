@@ -1,6 +1,7 @@
 import shutil
 from tkinter import *
 from tkinter import filedialog
+from tkinter import messagebox
 import os
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -11,13 +12,34 @@ from mtcnn.mtcnn import MTCNN
 from matplotlib.patches import Rectangle
 import glob
 import cv2
-
-
-
+from os.path import exists
 
 
 output_path='./output_images'
 input_path='./input_images'
+def clean_input():
+    dir = input_path
+    for file in os.scandir(dir):
+        os.remove(file.path)
+    print("clean input sucessfully")
+
+def clean_output():
+    dir = output_path
+    for file in os.scandir(dir):
+        os.remove(file.path)
+    print("clean output sucessfully")      
+
+
+
+def check_input_exist():
+    list_file = os.listdir(input_path) # dir is your directory path
+    file_count = len(list_file)
+    if file_count >0:
+        return True
+    return False
+
+
+
 global file_count
 def mask_detect(img):
   list_file = os.listdir(output_path) # dir is your directory path
@@ -49,13 +71,17 @@ def mask_detect(img):
     ax.text(x1, y1-2, txt, fontsize=14, fontweight='bold', color=color)
   
   plt.savefig(output_path+'/out%d.png'%(file_count), dpi=300,bbox_inches='tight')
-  print("process sucessfully")  
+  print("process sucessfully")
+  messagebox.showinfo("information","Process sucessfully !")
+  clean_input()
+  
   # plt.show()
   
   
 def run():
+    if not check_input_exist():
+        messagebox.showwarning("Warning", "Image is not selected")
     test_path = "./input_images"
-
     images = [cv2.imread(file) for file in glob.glob(test_path+"/*")]
     # print('There are {} test images'.format(len(images)))
     # print(test_path)
@@ -83,9 +109,11 @@ def UploadAction(event=None):
     if file_extension=="jpg":          
         shutil.copy(filename,input_path+'./in.jpg')
         print("saved file jpg")
+        messagebox.showinfo("information","Upload sucessfully !")
     elif file_extension=="png":
         shutil.copy(filename,input_path+'./in.png')
         print("saved file png")
+        messagebox.showinfo("information","Upload sucessfully !")
     else:
         print("file error !!!")
     # print('Selected:', filename)
