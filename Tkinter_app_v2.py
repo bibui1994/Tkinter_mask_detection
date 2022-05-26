@@ -1,16 +1,52 @@
 import sys
 from tkinter import *
-
+import cv2
 import os
 from PIL import ImageTk, Image
-from detect_app import run
-from detect_app import UploadAction
-from detect_app import check_input_exist
+from detect_app import run, UploadAction
+from detect_video_v2 import run_video_demo
 
 
 output_path='./output_images'
 input_path='./input_images'
 
+def clear_frame():
+    #frameImage,frameWebcam, frameButton
+    return 0
+
+def show_webcam():
+    # Get the latest frame and convert into Image
+    # run_video_demo(cap)
+    # cv2image= cv2.cvtColor(cap.read()[1],cv2.COLOR_BGR2RGB)
+    cv2image = run_video_demo(cap)
+    img = Image.fromarray(cv2image)
+    # Convert image to PhotoImage
+    imgtk = ImageTk.PhotoImage(image = img)
+    label_webcam.imgtk = imgtk
+    label_webcam.configure(image=imgtk)
+    # Repeat after an interval to capture continiously
+    label_webcam.after(20, show_webcam)
+    
+def frame_webcam():
+    for widgets in frameWebcam.winfo_children():
+      widgets.destroy()
+    btn_process_webcam = Button(frameWebcam, text="Open webcam",command=show_webcam_2)
+    btn_process_webcam.pack(expand=YES)
+    
+
+def show_webcam_2():
+    # Get the latest frame and convert into Image
+    
+    cv2image= cv2.cvtColor(cap.read()[1],cv2.COLOR_BGR2RGB)
+    img = Image.fromarray(cv2image)
+    # Convert image to PhotoImage
+    imgtk = ImageTk.PhotoImage(image = img)
+    label_webcam.imgtk = imgtk
+    label_webcam.configure(image=imgtk)
+    # Repeat after an interval to capture continiously
+    label_webcam.after(20, show_webcam_2)    
+    
+    
 def show_res():
     list_file = os.listdir(output_path) # dir is your directory path
     file_count = len(list_file)
@@ -30,6 +66,8 @@ def show_res():
 def detect_img():
     for widgets in frameButton.winfo_children():
       widgets.destroy()
+    for widgets in frameWebcam.winfo_children():
+      widgets.destroy()  
     #up
     btn_upload = Button(frameButton, text="Upload Image",command=UploadAction)
     btn_upload.pack(expand=YES)
@@ -84,6 +122,12 @@ frameEtudiant.pack(side='left',fill='y')
 #button upload, process, resultat
 frameButton=Frame(app,bd=1,relief=SUNKEN)
 frameButton.pack(expand=1)
+#frame webcam
+frameWebcam = Frame(app,bd=1,relief=SUNKEN)
+frameWebcam.pack()
+label_webcam=Label(frameImage)
+label_webcam.pack()
+cap= cv2.VideoCapture(0)
 
 
 #menu
@@ -94,7 +138,7 @@ frameMenu.pack(side='left',fill='y')
 cb_image = Radiobutton(frameMenu, text='Image',variable=var, value='detect by image',command=detect_img)
 cb_image.pack(anchor = W )
 #detect by webcam
-cb_live = Radiobutton(frameMenu, text='live video',variable=var, value='detect by live video',command=detect_webcam)
+cb_live = Radiobutton(frameMenu, text='live video',variable=var, value='detect by live video',command=frame_webcam)
 cb_live.pack(anchor = W )
 
 
