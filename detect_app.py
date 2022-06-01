@@ -14,7 +14,6 @@ import glob
 import cv2
 from os.path import exists
 
-
 output_path='./output_images'
 input_path='./input_images'
 def clean_input():
@@ -73,7 +72,7 @@ def mask_detect(img):
   plt.savefig(output_path+'/out%d.png'%(file_count), dpi=300,bbox_inches='tight')
   print("process sucessfully")
   messagebox.showinfo("information","Process sucessfully !")
-  clean_input()
+  # clean_input()
   
   # plt.show()
   
@@ -101,8 +100,9 @@ def run():
 def UploadAction(event=None):
     list_file = os.listdir(input_path) # dir is your directory path
     file_count = len(list_file)
-    #print(number_files)
+
     filename = filedialog.askopenfilename()
+
     split=filename.split('.')
     file_extension=split[-1]
     #shutil.copy(filename)
