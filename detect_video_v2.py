@@ -88,7 +88,8 @@ def run_video():
          
         # display image
         cv2.imshow('LIVE face mask detection', color_img)
-         
+        # if cv2.getWindowProperty('LIVE face mask detection', cv2.WND_PROP_VISIBLE) <1:
+        #     break 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
      

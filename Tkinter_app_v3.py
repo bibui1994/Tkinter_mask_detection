@@ -75,10 +75,11 @@ class Page_1:
         self.frameButton_P1.pack_forget()
         self.frameBack.pack_forget()
         self.app.main_page()
-        clean_output()
+        
     
         self.frameImage.pack_forget()
         self.frameSource.pack_forget()
+        clean_output()
     def show_res(self):
         self.frameImage.pack(side=RIGHT)
         self.frameSource.pack(side=LEFT)
@@ -127,6 +128,12 @@ class Page_1:
         new_image= ImageTk.PhotoImage(resized_image)
         canvas.create_image(20,20, anchor=NW, image=new_image)
         canvas.new_image=new_image
+    def saugarder_res(self):
+        filename = filedialog.asksaveasfilename()
+        
+        
+        
+        
 class Page_2:
     def __init__(self, master=None, app=None):
         self.master = master
