@@ -16,7 +16,7 @@ def clean():
     print("clean faces successfully! ")    
     
 def run_video():
-    model = load_model('1_MTCNN_Face_Mask_Detection/Outputs/cnn_model.h5') 
+    model = load_model('model/Outputs/cnn_model.h5') 
     # model = load_model('1_MTCNN_Face_Mask_Detection/Outputs/mask_detector_vgg19.h5') 
     # model accept below hight and width of the image
     img_width, img_hight = 256, 256

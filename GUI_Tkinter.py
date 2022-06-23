@@ -7,20 +7,25 @@ Created on Mon Jun  6 15:10:17 2022
 
 import tkinter as tk
 from tkinter import *
-import tkinter.font as font
+# import tkinter.font as font
 import customtkinter
 from tkinter import filedialog
 from tkinter import messagebox
 from PIL import ImageTk, Image
-from detect_app import run, UploadAction, clean_output,clean_input
-from detect_video_v2 import run_video
+from detect_img import run, clean_output,clean_input
+from detect_video import run_video
 import cv2
 import os
-import sys
+# import sys
 import shutil
+
+
+
+
+
 output_path='./output_images'
 input_path='./input_images'
-save_path='./save_result' 
+
 
 
 
@@ -72,14 +77,14 @@ class Page_1:
         btn_upload = customtkinter.CTkButton(self.frameButton_P1, text="Choirsir Image",
         fg_color= "#005DA4", text_font=(("Roboto Medium"), 10), text_color="white",command=self.UploadAction).grid(row=2,column=3, padx=50, pady=5)
         
-        btn_process = customtkinter.CTkButton(self.frameButton_P1, text="Traitement",
-        fg_color= "#005DA4", text_font=(("Roboto Medium"), 10), text_color="white",command=run).grid(row=3,column=3, padx=50)
+        btn_process = customtkinter.CTkButton(self.frameButton_P1, text="Détection",
+        fg_color= "#005DA4", text_font=(("Roboto Medium"), 10), text_color="white",command=lambda:[run(), self.result()]).grid(row=3,column=3, padx=50)
         
-        btn_showRes = customtkinter.CTkButton(self.frameButton_P1, text="Résultat",
-        fg_color= "#005DA4", text_font=(("Roboto Medium"), 10), text_color="white", command=self.result).grid(row=4,column=3, padx=50, pady=5)
+        # btn_showRes = customtkinter.CTkButton(self.frameButton_P1, text="Résultat",
+        # fg_color= "#005DA4", text_font=(("Roboto Medium"), 10), text_color="white", command=self.result).grid(row=4,column=3, padx=50, pady=5)
         
         btn_back = customtkinter.CTkButton(self.frameButton_P1, text="Retour",
-        fg_color= "#005DA4", text_font=(("Roboto Medium"), 10), text_color="white", command=self.go_back).grid(row=7,column=3, padx=50)
+        fg_color= "#005DA4", text_font=(("Roboto Medium"), 10), text_color="white", command=self.go_back).grid(row=7,column=3, padx=50, pady=5)
 
 
     def start_page(self):
@@ -98,8 +103,8 @@ class Page_1:
      
     
     def UploadAction(self):
-        list_file = os.listdir(input_path) # dir is your directory path
-        file_count = len(list_file)
+        # list_file = os.listdir(input_path) # dir is your directory path
+        # file_count = len(list_file)
 
         filename = filedialog.askopenfilename()
         split=filename.split('.')
@@ -109,11 +114,12 @@ class Page_1:
             shutil.copy(filename,input_path+'./in.jpg')
             print("saved file jpg")
             messagebox.showinfo("information","Upload sucessfully !")
-
+            #anglais
         elif file_extension=="png":
             shutil.copy(filename,input_path+'./in.png')
             print("saved file png")
             messagebox.showinfo("information","Upload sucessfully !")
+            #anglais
 
         else:
             print("file error !!!")
@@ -129,9 +135,11 @@ class Page_1:
         file_count_output = len(list_file_output)
         if file_count_input == 0:
             tk.messagebox.showerror(title="Error", message="no input, no output")
+            #anglais
             
         elif file_count_output==0:
-            tk.messagebox.showerror(title="Error", message="click button traitement to show output")    
+            tk.messagebox.showerror(title="Error", message="click button traitement to show output")
+            #anglais
         else:
             win = Toplevel(root)
             win.title("Résultat")
@@ -203,6 +211,7 @@ class Page_1:
             im.save(abs_path) # saves the image to the input file name. 
         clean_output()
         messagebox.showinfo("information","Save sucessfully !")
+        #anglais
 class Page_2:
     def __init__(self, master=None, app=None):
         self.master = master
@@ -215,7 +224,7 @@ class Page_2:
    
         self.frameButton_P2 = tk.Frame(frame_right,padx=10, pady=10, bg="#d1d5d8")
         
-        btn_start = customtkinter.CTkButton(self.frameButton_P2, text="Start video",
+        btn_start = customtkinter.CTkButton(self.frameButton_P2, text="Start video",#anglais
         fg_color= "#005DA4", text_font=(("Roboto Medium"), 10), text_color="white",command=run_video).grid(row=0,column=3, padx=50, pady=5)
         btn_retour = customtkinter.CTkButton(self.frameButton_P2, text="Retour",
         fg_color= "#005DA4", text_font=(("Roboto Medium"), 10), text_color="white",command=self.go_back).grid(row=2,column=3, padx=50, pady=5)
@@ -228,9 +237,10 @@ class Page_2:
         # self.frameVideo.pack()
 
     def go_back(self):
+        
         self.frame.grid_forget()
         self.app.main_page()
-        self.frameButton_P2.grid_forget()        
+        self.frameButton_P2.grid_forget()
 
 if __name__ == '__main__':
     
@@ -243,7 +253,7 @@ if __name__ == '__main__':
     root.geometry("1080x720")
     root.maxsize(1080, 720)
     root.minsize(1080, 720)
-    root.iconbitmap("R.ico")
+    root.iconbitmap("img_GUI/R.ico")
     root.grid_columnconfigure(1, weight=1)
     root.grid_rowconfigure(0, weight=1)
     
@@ -253,7 +263,7 @@ if __name__ == '__main__':
     frame_left.grid(row=0, column=0, sticky="nswe")
     
     # logo de univ
-    img = ImageTk.PhotoImage(Image.open("logo_2.png").resize((200,160)))
+    img = ImageTk.PhotoImage(Image.open("img_GUI/logo.png").resize((200,160)))
     panel = Label(frame_left, image = img)
     panel.grid(padx=30, pady=30)
 
@@ -267,6 +277,13 @@ if __name__ == '__main__':
     label_nom2.grid()
     label_nom3 = Label(frame_membres, text="LEWHE Habib", bg="#d1d5d8", font=("Roboto Medium", 10))
     label_nom3.grid()
+    
+    frame_supervisor = LabelFrame(frame_left, text="Sous la supervision de :", 
+                               bg="#d1d5d8", fg="#005DA4", font=("Roboto Medium", 10), padx=20, pady=15)
+    frame_supervisor.grid(padx=20, pady=30)
+    
+    label_nom1 = Label(frame_supervisor, text="Mme Imane YOUKANA", bg="#d1d5d8", font=("Roboto Medium", 10))
+    label_nom1.grid()
     
     
     #frame de droite
@@ -286,17 +303,6 @@ if __name__ == '__main__':
     label_subtitle = Label(frameTitle, text="Détection de masque avec Deep Learning",
                            font=("Roboto Medium",12), bg = "#ffffff", fg = "#005DA4", justify="center")
     label_subtitle.grid(pady=10)
-    
-    # frame menu
-    # frameMenu = Frame(frame_right, padx=10, pady=10, bg="#d1d5d8") #d1d5d8
-    # frameMenu.grid(sticky="nswe", padx= 100, pady=30)
-    
-    # frame résultat
-    # frame_result = LabelFrame(frame_right, text="Résultat", bg="#cffbe4", padx= 30, pady=30)
-    # frame_result.grid(sticky="nswe",padx= 100, pady=30)
-    
-    # a button widget which will
-    # open a new window on button click
 
 
     #from video
@@ -306,3 +312,4 @@ if __name__ == '__main__':
     
     app = App(root)
     root.mainloop()
+    
