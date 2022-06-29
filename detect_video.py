@@ -7,6 +7,7 @@ from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import numpy as np
 from mtcnn.mtcnn import MTCNN
 from tkinter import messagebox
+from tensorflow.keras.preprocessing.image import smart_resize
 
 import os
 def clean():
@@ -14,21 +15,20 @@ def clean():
         os.remove(os.path.join('./faces', f))
         print("deteted ", str(f))
     print("clean faces successfully! ")
-    #anglais
+
     
 def run_video():
     #cnn_model.h5
     model = load_model('model/Outputs/cnn_model_30_313.h5') 
-    # model = load_model('1_MTCNN_Face_Mask_Detection/Outputs/mask_detector_vgg19.h5') 
+
     # model accept below hight and width of the image
     img_width, img_hight = 256, 256
      
 
     detector = MTCNN() 
-    #startt  web cam
-    cap = cv2.VideoCapture(0) # for webcam
-    # video_path='./test/video/'
-    #cap = cv2.VideoCapture(video_path+'testvideo_01.mp4') # for video
+    #start  web cam
+    cap = cv2.VideoCapture(0) 
+
      
     img_count_full = 0
      
@@ -45,7 +45,7 @@ def run_video():
     thickness = 2 
     if not cap.isOpened():
         print("webcam error")
-        messagebox.showwarning("Warning", "Can not access webcam")
+        messagebox.showwarning("Attention", "Webcam introuvable")
         #anglais
     while True:
         img_count_full += 1
@@ -57,10 +57,8 @@ def run_video():
         if responce == False:
             break    
          
-        # Convert to grayscale
-        gray_img = cv2.cvtColor(color_img, cv2.COLOR_BGR2RGB)
-
-        faces = detector.detect_faces(gray_img)
+        color_img_arry= img_to_array(color_img)
+        faces = detector.detect_faces(color_img_arry)
         img_count = 0
         for face in faces:
             x, y, w, h = face['box']
@@ -71,29 +69,31 @@ def run_video():
             cv2.imwrite('faces/%d%dface.jpg'%(img_count_full,img_count),color_face)
             img = load_img('faces/%d%dface.jpg'%(img_count_full,img_count), target_size=(img_width,img_hight))
              
-            img = img_to_array(img)
-            img = np.expand_dims(img,axis=0)
-            pred_prob = model.predict(img)
-            pred=np.argmax(pred_prob)
-            if pred==0:
-              print("user not wearing mask - predic = ",pred_prob[0][0])  
-              txt = 'Without Mask'
-              color = (0,0,255)
-              cv2.imwrite('faces/%d%dface.jpg'%(img_count_full,img_count),color_face)
+            img_array = img_to_array(img)
+            img_array = np.expand_dims(img_array,axis=0)
+
+            pred_new= model.predict(img_array);
+              
+              
+            if pred_new[0][0] <= pred_new[0][1]:
+                print(' User with mask- prob = ',pred_new[0][1])
+                txt = 'With Mask'
+                color = (0,255,0)
+                cv2.imwrite('faces/%d%dface.jpg'%(img_count_full,img_count),color_face)   
             else:
-              print(' User with mask- prob = ',pred_prob[0][1])
-              txt = 'With Mask'
-              color = (0,255,0)
-              cv2.imwrite('faces/%d%dface.jpg'%(img_count_full,img_count),color_face)             
+                print("user not wearing mask - predic = ",pred_new[0][0])  
+                txt = 'Without Mask'
+                color = (0,0,255)
+                cv2.imwrite('faces/%d%dface.jpg'%(img_count_full,img_count),color_face)
+                
+       
+
             cv2.rectangle(color_img, (x, y), (x+w, y+h), color, 3)
             cv2.putText(color_img, txt, org, font,  
                                        fontScale, color, thickness, cv2.LINE_AA) 
          
-        # display image
-        #anglais
-        cv2.imshow('LIVE face mask detection', color_img)
-        # if cv2.getWindowProperty('LIVE face mask detection', cv2.WND_PROP_VISIBLE) <1:
-        #     break 
+
+        cv2.imshow('Détection de masque en live', color_img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
      
@@ -102,6 +102,8 @@ def run_video():
     cv2.destroyAllWindows()
     #delete all images
     clean()
+    
+ 
 
     
 

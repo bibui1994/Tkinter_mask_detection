@@ -1,6 +1,5 @@
-# import shutil
+
 from tkinter import *
-# from tkinter import filedialog
 from tkinter import messagebox
 import os
 import seaborn as sns
@@ -12,7 +11,7 @@ from mtcnn.mtcnn import MTCNN
 from matplotlib.patches import Rectangle
 import glob
 import cv2
-# from os.path import exists
+
 
 output_path='./output_images'
 input_path='./input_images'
@@ -21,14 +20,14 @@ def clean_input():
     for file in os.scandir(dir):
         os.remove(file.path)
     print("clean input sucessfully")
-    #anglais
 
+    
 def clean_output():
     dir = output_path
     for file in os.scandir(dir):
         os.remove(file.path)
     print("clean output sucessfully")
-    #anglais      
+     
 
 
 
@@ -47,7 +46,6 @@ def mask_detect(img):
   list_file = os.listdir(output_path) # dir is your directory path
   file_count = len(list_file)
   model = keras.models.load_model("model/Outputs/cnn_model.h5")
-  # model = keras.models.load_model("./cnn_model.h5")
   sns.set_theme(style="white", palette=None)
   img_ary = img_to_array(img)
   detector = MTCNN()
@@ -60,8 +58,6 @@ def mask_detect(img):
     x2, y2 = x1+width, y1+height
 
     pred = model.predict(smart_resize(img_ary[y1:y2, x1:x2], (256, 256)).reshape(1, 256, 256, 3));
-    # print("prediction")
-    # print(pred)
     if pred[0][0] >= pred[0][1]:
       txt = 'Without Mask'
       color = 'red'
@@ -75,21 +71,15 @@ def mask_detect(img):
   
   plt.savefig(output_path+'/out%d.png'%(file_count), dpi=300,bbox_inches='tight')
   print("process sucessfully")
-  messagebox.showinfo("information","Process sucessfully !")
-  #anglais
-  # clean_input()
-  
-  # plt.show()
+  messagebox.showinfo("Information","Traitement réussi !")
+
   
   
 def run():
     if not check_input_exist():
-        messagebox.showwarning("Warning", "Aucune image sélectionnée")
+        messagebox.showwarning("Attention", "Aucune image sélectionnée")
     test_path = "./input_images"
     images = [cv2.imread(file) for file in glob.glob(test_path+"/*")]
-    # print('There are {} test images'.format(len(images)))
-    # print(test_path)
-    # print(images)
     scaled_images =[]
     for img in images:
       dim = (256,256)
